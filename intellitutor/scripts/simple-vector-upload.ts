@@ -56,6 +56,11 @@ async function main() {
     // Upload in very small batches
     console.log('   Uploading to Pinecone...')
     
+    if (!index) {
+      console.warn('⚠️ Pinecone index not available - skipping vector upload')
+      return
+    }
+    
     for (let i = 0; i < Math.min(chunks.length, 20); i++) { // Only first 20 chunks for testing
       try {
         const embedding = await generateEmbedding(chunks[i])

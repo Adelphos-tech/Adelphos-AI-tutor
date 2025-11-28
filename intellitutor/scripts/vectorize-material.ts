@@ -51,6 +51,12 @@ async function main() {
     
     // Upload vectors (limit to 50 for this large document)
     console.log('\n3️⃣ Uploading to Pinecone...')
+    
+    if (!index) {
+      console.warn('⚠️ Pinecone index not available - skipping vector upload')
+      return
+    }
+    
     const limit = Math.min(chunks.length, 50)
     
     for (let i = 0; i < limit; i++) {

@@ -21,6 +21,11 @@ type VectorRecord = {
 async function uploadMaterial(materialId: string, title: string, fileUrl: string, fileType: string) {
   console.log(`\n🔄 Processing: ${title}`)
   
+  if (!index) {
+    console.warn('⚠️ Pinecone index not available - skipping vector upload')
+    return
+  }
+  
   // Get the document text
   const { text } = await processDocument(fileUrl, fileType)
   
