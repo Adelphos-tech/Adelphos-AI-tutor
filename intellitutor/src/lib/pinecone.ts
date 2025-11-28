@@ -11,11 +11,9 @@ const pinecone = PINECONE_ENABLED ? new Pinecone({
   apiKey: process.env.PINECONE_API_KEY!
 }) : null
 
-const pc = pinecone
-
 // Use document-knowledge-base index (dimension 384, matches all-MiniLM-L6-v2)
 const indexName = 'document-knowledge-base'
-export const index = pc ? pc.index(indexName) : null
+export const index = pinecone?.index(indexName) ?? null
 
 // Upsert document chunks to Pinecone
 export async function upsertDocumentChunks(
