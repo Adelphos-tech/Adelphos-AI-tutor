@@ -141,9 +141,9 @@ export function detectChapters(text: string): Array<{
         seenNumbers.add(number)
         
         const title = match[2].trim()
-        const startIndex = match.index || 0
+        const startIndex = match.index ?? 0
         const endIndex = index < matches.length - 1 
-          ? (matches[index + 1].index || text.length)
+          ? (matches[index + 1].index ?? text.length)
           : text.length
         
         chapters.push({ number, title, startIndex, endIndex })
