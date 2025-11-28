@@ -14,7 +14,7 @@ const isRateLimitError = (error: unknown): error is { status?: number; message?:
   }
 
   const candidate = error as { status?: number; message?: string }
-  return candidate.status === 429 || candidate.message?.includes('429') || candidate.message?.includes('Too Many Requests')
+  return candidate.status === 429 || (candidate.message?.includes('429') ?? false) || (candidate.message?.includes('Too Many Requests') ?? false)
 }
 
 export async function POST(request: NextRequest) {

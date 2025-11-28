@@ -276,7 +276,7 @@ export function useGoogleVoiceAssistant({ onTranscript, onError }: UseGoogleVoic
         
         // If it's Gemini voice, it returns PCM audio which needs to be wrapped as WAV
         if (isGeminiVoice && (mimeType.includes('pcm') || mimeType.includes('L16'))) {
-          audioData = createWavFile(audioData) as Uint8Array
+          audioData = new Uint8Array(createWavFile(audioData))
           mimeType = 'audio/wav'
         }
         
@@ -342,8 +342,8 @@ export function useGoogleVoiceAssistant({ onTranscript, onError }: UseGoogleVoic
       // Check for both Error.name and DOMException
       if (error instanceof Error && 
           (error.name === 'AbortError' || 
-           error.message?.includes('aborted') ||
-           error.message?.includes('signal is aborted'))) {
+           (error.message?.includes('aborted') ?? false) ||
+           (error.message?.includes('signal is aborted') ?? false))) {
         return // Silent return - this is intentional interruption
       }
       
