@@ -18,9 +18,6 @@ import {
   Loader2
 } from 'lucide-react'
 import ChatInterface from '@/components/ChatInterface'
-import VoiceTeacher from '@/components/VoiceTeacher'
-import VoiceTeacherGemini from '@/components/VoiceTeacherGemini'
-import VoiceTeacherLive from '@/components/VoiceTeacherLive'
 import VoiceTeacherRealtime from '@/components/VoiceTeacherRealtime'
 
 interface Material {
