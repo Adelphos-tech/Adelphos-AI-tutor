@@ -1,0 +1,103 @@
+# ========================================
+# RAILWAY ENVIRONMENT VARIABLES
+# ========================================
+# Copy and paste these into Railway Dashboard → Your Project → Variables
+# Replace the placeholder values with your actual credentials
+# ========================================
+
+# -------------------- DATABASE --------------------
+# Option 1: Use Railway Postgres Plugin (RECOMMENDED)
+# 1. In Railway, click "+ New" → "Database" → "PostgreSQL"
+# 2. Railway will automatically create DATABASE_URL for you
+# 3. Skip adding DATABASE_URL manually if using Railway Postgres
+
+# Option 2: Use External Database
+# Uncomment and fill in your external database URL:
+# DATABASE_URL=postgresql://username:password@host:port/database_name
+
+# -------------------- DEEPGRAM API --------------------
+# Get your API key from: https://console.deepgram.com/
+DEEPGRAM_API_KEY=your_actual_deepgram_api_key_here
+
+# -------------------- GEMINI API --------------------
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+GEMINI_SPEECH_MODEL=gemini-2.5-flash-preview-tts
+
+# -------------------- PINECONE --------------------
+PINECONE_API_KEY=your_actual_pinecone_api_key_here
+PINECONE_ENVIRONMENT=your_pinecone_environment_here
+PINECONE_INDEX_NAME=intellitutor-vectors
+
+# -------------------- NEXTAUTH --------------------
+# IMPORTANT: Update NEXTAUTH_URL after deployment with your actual Railway URL
+NEXTAUTH_URL=https://your-app-name.up.railway.app
+NEXTAUTH_SECRET=9K30GEWth5VGVkn/3XY9VzG/mWooXrER5KE4XXp9aDM=
+
+# -------------------- FILE UPLOAD --------------------
+MAX_FILE_SIZE=209715200
+UPLOAD_DIR=/tmp/uploads
+
+# -------------------- AWS S3 (OPTIONAL) --------------------
+# Only add these if you want to use S3 for file storage in production
+# AWS_ACCESS_KEY_ID=your_aws_access_key_id
+# AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+# AWS_REGION=us-east-1
+# AWS_S3_BUCKET=intellitutor-files
+
+# -------------------- NODE VERSION --------------------
+# This is already set in railway.toml, but you can override here if needed
+NODE_VERSION=22
+
+
+# ========================================
+# STEP-BY-STEP INSTRUCTIONS
+# ========================================
+
+# 1. ADD RAILWAY POSTGRES DATABASE (Recommended):
+#    - In Railway dashboard, click "+ New"
+#    - Select "Database" → "PostgreSQL"
+#    - Railway automatically creates DATABASE_URL variable
+#    - No need to manually add DATABASE_URL
+
+# 2. GET YOUR API KEYS:
+#    - Deepgram API: https://console.deepgram.com/ (Create account → API Keys)
+#    - Gemini API: https://aistudio.google.com/app/apikey
+#    - Pinecone API: https://app.pinecone.io/ (Account → API Keys)
+#    - Pinecone Environment: Check your Pinecone dashboard
+
+# 3. COPY VARIABLES TO RAILWAY:
+#    - Go to Railway → Your Project → "Variables" tab
+#    - Click "Raw Editor" button (top right)
+#    - Copy the variables from this file (lines with = signs)
+#    - Paste into Railway's editor
+#    - Replace all "your_actual_..." placeholders with real values
+#    - Click "Save"
+
+# 4. UPDATE NEXTAUTH_URL AFTER FIRST DEPLOYMENT:
+#    - After Railway deploys, you'll get a URL like:
+#      https://adelphos-ai-tutor-production.up.railway.app
+#    - Go back to Variables
+#    - Update NEXTAUTH_URL with your actual Railway URL
+#    - Save and redeploy
+
+# 5. VERIFY ALL VARIABLES:
+#    - Make sure no placeholder values remain
+#    - Check that DATABASE_URL exists (from Railway Postgres)
+#    - Ensure NEXTAUTH_SECRET is the generated value above
+
+# ========================================
+# QUICK COPY FORMAT (for Railway Raw Editor)
+# ========================================
+# Remove comments and paste this section:
+
+DEEPGRAM_API_KEY=your_actual_deepgram_api_key_here
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+GEMINI_SPEECH_MODEL=gemini-2.5-flash-preview-tts
+PINECONE_API_KEY=your_actual_pinecone_api_key_here
+PINECONE_ENVIRONMENT=your_pinecone_environment_here
+PINECONE_INDEX_NAME=intellitutor-vectors
+NEXTAUTH_URL=https://your-app-name.up.railway.app
+NEXTAUTH_SECRET=9K30GEWth5VGVkn/3XY9VzG/mWooXrER5KE4XXp9aDM=
+MAX_FILE_SIZE=209715200
+UPLOAD_DIR=/tmp/uploads
+NODE_VERSION=22
