@@ -1,93 +1,76 @@
 # Railway Deployment Guide
 
-## ✅ Fixed Issues
+## ✅ How to Fix the Build Error
 
-Created `railway.toml` at the root to tell Railway:
-- Build from the `intellitutor` directory
-- Use Node.js 22
-- Run `npm install && npm run build` 
-- Start with `npm run start`
+The error occurs because Railway can't find `package.json` at the repo root.  
+Your Next.js app is inside the `intellitutor` folder.
 
-This fixes the "Error creating build plan with Railpack" error.
+**Solution:** Configure Railway to use `intellitutor` as the root directory.
 
 ---
 
 ## 🚀 Deploy Steps
 
-### 1. Push the railway.toml file
+### 1. Configure Root Directory in Railway
+
+In Railway dashboard:
+
+1. Go to your **Adelphos-AI-tutor** service
+2. Click **Settings** tab
+3. Scroll to **Source** section
+4. Find **Root Directory** field
+5. Enter: `intellitutor`
+6. Click **Save** or it auto-saves
+
+### 2. Add Railway Postgres Database
+
+In Railway dashboard:
+
+1. Click **+ New**
+2. Select **Database** → **PostgreSQL**  
+3. Railway automatically creates `DATABASE_URL` variable ✅
+
+### 3. Set Environment Variables
+
+Go to **Variables** tab → Click **"Raw Editor"** → Paste these:
 
 ```bash
-git add railway.toml RAILWAY_DEPLOYMENT.md
-git commit -m "Add Railway deployment config"
-git push origin main
-```
-
-### 2. Set Environment Variables in Railway
-
-Go to your Railway project → **Variables** tab and add these:
-
-#### Required Variables
-
-```bash
-# Database (use Railway Postgres plugin or external DB)
-DATABASE_URL=postgresql://user:password@host:5432/intellitutor
-
-# Gemini API
-GEMINI_API_KEY=your_gemini_api_key_here
+DEEPGRAM_API_KEY=your_actual_deepgram_api_key_here
+GEMINI_API_KEY=your_actual_gemini_api_key_here
 GEMINI_SPEECH_MODEL=gemini-2.5-flash-preview-tts
-
-# Pinecone
-PINECONE_API_KEY=your_pinecone_api_key_here
-PINECONE_ENVIRONMENT=your_pinecone_environment
+PINECONE_API_KEY=your_actual_pinecone_api_key_here
+PINECONE_ENVIRONMENT=your_pinecone_environment_here
 PINECONE_INDEX_NAME=intellitutor-vectors
-
-# NextAuth
-NEXTAUTH_URL=https://your-app.railway.app
-NEXTAUTH_SECRET=your_nextauth_secret_here
-
-# File Upload
+NEXTAUTH_URL=https://your-app-name.up.railway.app
+NEXTAUTH_SECRET=9K30GEWth5VGVkn/3XY9VzG/mWooXrER5KE4XXp9aDM=
 MAX_FILE_SIZE=209715200
 UPLOAD_DIR=/tmp/uploads
 ```
 
-#### Optional (for S3 file storage)
+**Get your API keys from:**
+- **Deepgram**: https://console.deepgram.com/
+- **Gemini**: https://aistudio.google.com/app/apikey
+- **Pinecone**: https://app.pinecone.io/
 
-```bash
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_REGION=us-east-1
-AWS_S3_BUCKET=intellitutor-files
-```
+Replace all `your_actual_...` placeholders with real values.
 
-### 3. Add Railway Postgres (Recommended)
+### 4. Trigger Redeploy
 
-1. In your Railway project, click **+ New**
-2. Select **Database** → **PostgreSQL**
-3. Railway will automatically set `DATABASE_URL` for you
-
-### 4. Generate NEXTAUTH_SECRET
-
-Run this locally and copy the output:
-
-```bash
-openssl rand -base64 32
-```
-
-Paste it as the `NEXTAUTH_SECRET` value in Railway.
-
-### 5. Update NEXTAUTH_URL
-
-After deployment, Railway will give you a URL like `https://adelphos-ai-tutor-production.up.railway.app`
-
-Update the `NEXTAUTH_URL` variable to match that URL.
-
-### 6. Trigger Deployment
-
-After pushing `railway.toml` and setting all environment variables:
+After setting the root directory and environment variables:
 
 1. Go to **Deployments** tab
-2. Click **Deploy** or it will auto-deploy from your latest commit
-3. Watch the build logs - it should now succeed
+2. Click the **three dots `⋮`** on the failed deployment
+3. Click **"Redeploy"**
+4. Watch the build logs - it should now succeed ✅
+
+### 5. Update NEXTAUTH_URL After Deploy
+
+After successful deployment:
+
+1. Copy your Railway app URL (e.g., `https://adelphos-ai-tutor-production.up.railway.app`)
+2. Go back to **Variables** tab
+3. Update `NEXTAUTH_URL` with the real URL
+4. Redeploy again
 
 ---
 
@@ -108,17 +91,22 @@ After pushing `railway.toml` and setting all environment variables:
 
 ### Database migrations:
 
-If you need to run Prisma migrations on Railway, update the build command in `railway.toml`:
+If you need to run Prisma migrations on Railway:
 
-```toml
-buildCommand = "cd intellitutor && npm install && npx prisma generate && npx prisma migrate deploy && npm run build"
-```
+1. Go to **Settings** tab
+2. Find **Build Command** (or **Custom Build Command**)
+3. Enter:
+   ```bash
+   npm install && npx prisma generate && npx prisma migrate deploy && npm run build
+   ```
+4. Save and redeploy
 
 ---
 
 ## 📝 Notes
 
-- Railway automatically detects the `railway.toml` file
+- Railway automatically detects Next.js apps from `package.json`
+- Set root directory to `intellitutor` in Settings → Source
 - The app will be available at `https://your-project.up.railway.app`
 - Logs are available in the Railway dashboard
 - Railway provides 500 hours/month free tier
