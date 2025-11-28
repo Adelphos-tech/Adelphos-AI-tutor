@@ -3,6 +3,14 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
+    // Handle build-time execution when DATABASE_URL is not available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     // TODO: Get userId from session
     const userId = 'demo-user-id'
 

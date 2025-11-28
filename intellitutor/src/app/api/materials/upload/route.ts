@@ -23,6 +23,14 @@ const normalizeConceptCategory = (value?: string | null): ConceptCategory => {
 export async function POST(request: NextRequest) {
   console.log('📤 ========== UPLOAD REQUEST RECEIVED ==========')
   try {
+    // Handle build-time execution when DATABASE_URL is not available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File
     console.log(`📄 File received: ${file?.name}, Size: ${file?.size} bytes`)

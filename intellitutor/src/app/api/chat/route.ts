@@ -19,6 +19,14 @@ const isRateLimitError = (error: unknown): error is { status?: number; message?:
 
 export async function POST(request: NextRequest) {
   try {
+    // Handle build-time execution when DATABASE_URL is not available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     const { materialId, question, conversationHistory } = await request.json()
 
     if (!materialId || !question) {

@@ -7,6 +7,14 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Handle build-time execution when DATABASE_URL is not available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     const { id: materialId } = await params
 
     const material = await prisma.material.findUnique({
@@ -43,6 +51,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Handle build-time execution when DATABASE_URL is not available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     const { id: materialId } = await params
 
     // Get material to find file path

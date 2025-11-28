@@ -4,22 +4,30 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL
+// Create Prisma client with conditional configuration
+const createPrismaClient = () => {
+  // During build time, DATABASE_URL might not be available
+  const databaseUrl = process.env.DATABASE_URL || 'postgresql://user:pass@localhost:5432/placeholder'
+  
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    datasources: {
+      db: {
+        url: databaseUrl
+      }
+    },
+    // Connection pooling configuration
+    // @ts-expect-error Prisma doesn't expose __internal types but accepts them at runtime
+    __internal: {
+      engine: {
+        connection_limit: 10,
+        pool_timeout: 30,
+      }
     }
-  },
-  // Connection pooling configuration
-  // @ts-expect-error Prisma doesn't expose __internal types but accepts them at runtime
-  __internal: {
-    engine: {
-      connection_limit: 10,
-      pool_timeout: 30,
-    }
-  }
-})
+  })
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
@@ -31,6 +39,12 @@ const RETRY_DELAY = 2000
 type PrismaConnectionError = Error & { code?: string }
 
 async function connectWithRetry() {
+  // Skip connection during build time
+  if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+    console.log('⏭️ Skipping database connection during build time')
+    return
+  }
+  
   try {
     await prisma.$connect()
     console.log('✅ Database connected successfully')
@@ -49,7 +63,10 @@ async function connectWithRetry() {
   }
 }
 
-connectWithRetry()
+// Only attempt connection if not in build mode
+if (typeof window === 'undefined' && process.env.DATABASE_URL) {
+  connectWithRetry()
+}
 
 // Graceful shutdown
 process.on('beforeExit', async () => {
